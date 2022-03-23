@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QThread>
 #include <QFile>
+#include <QTextStream>
 
 C45B::C45B(QObject *parent)
     : QObject{parent}
@@ -18,19 +19,26 @@ C45B::~C45B() {
     delete this->port;
 }
 
-bool C45B::open() {
-    QList<QSerialPortInfo> portinfo = QSerialPortInfo::availablePorts();
-    if (portinfo.length() == 0) {
-        qDebug() << "No devices found";
-        return false;
+bool C45B::open(QString portname, int baud) {
+
+    QSerialPortInfo device;
+    if (portname == "null") {
+        QList<QSerialPortInfo> portinfo = QSerialPortInfo::availablePorts();
+        if (portinfo.length() == 0) {
+            qDebug() << "No devices found";
+            return false;
+        }
+        device = portinfo[0];
+    } else {
+        device = QSerialPortInfo(portname);
     }
 
-    this->port->setBaudRate(QSerialPort::Baud19200);
+    this->port->setBaudRate(baud);
     this->port->setFlowControl(QSerialPort::SoftwareControl);
     this->port->setParity(QSerialPort::NoParity);
     this->port->setDataBits(QSerialPort::Data8);
     this->port->setStopBits(QSerialPort::OneStop);
-    this->port->setPort(portinfo[0]);
+    this->port->setPort(device);
     if (this->port->open(QIODevice::ReadWrite)) {
         this->log("Connected");
         return true;
@@ -109,7 +117,7 @@ void C45B::upload(QString file) {
 
             this->port->waitForReadyRead(5000);
             ba = this->port->readAll(); // XOFF data XON
-            if (ba.at(1) != '.') {
+            if (ba.at(0) != '.') { // 1 on windows?
                 log(QString("Unexpected response ").append(ba.at(0)) + "\n");
                 return;
             }

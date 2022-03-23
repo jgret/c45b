@@ -21,7 +21,7 @@ public:
     ~C45B();
     void connectToBootloader();
     void upload(QString file);
-    bool open();
+    bool open( QString portname, int baud);
     void log(QString s);
     void setLogStream(QTextStream *o);
 
