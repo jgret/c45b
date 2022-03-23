@@ -12,6 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+      with:
+        path: '.'
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.2.3'
+    - name: qmake
+      run: qmake -makefile -o Makefile ${{github.workspace}}/c45b.pro
+    - name: make
+      run: make
     - name: zip
       run: tar -zcvf app.tar.gz ${{github.workspace}}
       
@@ -33,6 +44,6 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: ./app.tar.gz
-        asset_name: app
+        asset_name: app.tar.gz
         asset_content_type: application/zip
 
