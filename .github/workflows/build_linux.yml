@@ -16,5 +16,8 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         version: '6.2.3'
+    - name: show dir
+      run: ls -l
     - name: qmake
       run: qmake c45b.pro 
+
