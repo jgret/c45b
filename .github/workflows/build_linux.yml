@@ -18,7 +18,9 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '6.2.3'
+        version: '6.2'
+        modules: 'qtserialport'
+          
     - name: qmake
       run: qmake -makefile -o Makefile ${{github.workspace}}/c45b.pro
     - name: make
