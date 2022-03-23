@@ -12,12 +12,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: show dir
+      run: ls -l
+    - name: show path
+      run: pwd
+    - name: show parent dir
+      run : ls -l ..
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         version: '6.2.3'
-    - name: show dir
-      run: ls -l
     - name: qmake
       run: qmake c45b.pro 
 
